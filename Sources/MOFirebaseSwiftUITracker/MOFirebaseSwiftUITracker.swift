@@ -37,16 +37,16 @@ extension UserEvent {
 // MARK: AnalyticsEvent
 import FirebaseAnalytics
 
-protocol AnalyticsEvent: Event {
+public protocol AnalyticsEvent: Event {
     var name: String { get }
     var parameters: [String: Any?]? { get }
 }
 
-struct ScreenViewedEvent: AnalyticsEvent {
-    let name = AnalyticsEventScreenView
-    let parameters: [String : Any?]?
+public struct ScreenViewedEvent: AnalyticsEvent {
+    public let name = AnalyticsEventScreenView
+    public let parameters: [String : Any?]?
     
-    init(name: String) {
+    public init(name: String) {
         parameters = [
             AnalyticsParameterScreenClass: name,
             AnalyticsParameterScreenName: name
@@ -54,16 +54,16 @@ struct ScreenViewedEvent: AnalyticsEvent {
     }
 }
 
-struct PurchaseCompletedEvent: AnalyticsEvent {
-    let name = AnalyticsEventPurchase
-    let parameters: [String : Any?]?
+public struct PurchaseCompletedEvent: AnalyticsEvent {
+    public let name = AnalyticsEventPurchase
+    public let parameters: [String : Any?]?
     
-    init() {
+    public init() {
         // Current StoreKit2 APIs do not provide enough information to fill in currency and value
         parameters = nil
     }
     
-    init(
+    public init(
         affiliation: String? = nil,
         currency: String,
         transactionId: String,
@@ -82,16 +82,16 @@ struct PurchaseCompletedEvent: AnalyticsEvent {
     }
 }
 
-struct PurchaseStartedEvent: AnalyticsEvent {
-    let name = AnalyticsEventBeginCheckout
-    let parameters: [String : Any?]?
+public struct PurchaseStartedEvent: AnalyticsEvent {
+    public let name = AnalyticsEventBeginCheckout
+    public let parameters: [String : Any?]?
     
-    init() {
+    public init() {
         // Current StoreKit2 APIs do not provide enough information to fill in currency and value
         parameters = nil
     }
     
-    init(
+    public init(
         currency: String,
         value: Double
     ) {
@@ -104,9 +104,9 @@ struct PurchaseStartedEvent: AnalyticsEvent {
     }
 }
 
-struct StoreViewedEvent: AnalyticsEvent {
-    let name = AnalyticsEventViewCart
-    let parameters: [String : Any?]? = nil
+public struct StoreViewedEvent: AnalyticsEvent {
+    public let name = AnalyticsEventViewCart
+    public let parameters: [String : Any?]? = nil
 }
 
 import FirebaseAnalytics
