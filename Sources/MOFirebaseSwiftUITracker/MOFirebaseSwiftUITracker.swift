@@ -107,6 +107,8 @@ public struct PurchaseStartedEvent: AnalyticsEvent {
 public struct StoreViewedEvent: AnalyticsEvent {
     public let name = AnalyticsEventViewCart
     public let parameters: [String : Any?]? = nil
+    
+    public init() {}
 }
 
 import FirebaseAnalytics
