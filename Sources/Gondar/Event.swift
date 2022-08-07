@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by jk on 2022-08-07.
-//
-
 // MARK: Event
 public protocol Event {}
 

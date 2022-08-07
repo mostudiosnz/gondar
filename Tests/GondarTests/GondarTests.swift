@@ -1,7 +1,7 @@
 import XCTest
-@testable import MOFirebaseSwiftUITracker
+@testable import Gondar
 
-final class MOFirebaseSwiftUITrackerTests: XCTestCase {
+final class GondarTests: XCTestCase {
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
