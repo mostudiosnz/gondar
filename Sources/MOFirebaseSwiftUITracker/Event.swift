@@ -6,8 +6,12 @@
 //
 
 // MARK: Event
-public protocol Event {
-    
+public protocol Event {}
+
+public extension Event {
+    var defaultName: String { String(describing: type(of: self)) }
+    var defaultParameters: [String: Any]? { nil }
+    var defaultValue: String? { nil }
 }
 
 public enum EventTrigger {
@@ -20,8 +24,8 @@ public protocol CustomEvent: Event {
 }
 
 extension CustomEvent {
-    var name: String { String(describing: type(of: self)) }
-    var parameters: [String: Any]? { nil }
+    var name: String { defaultName }
+    var parameters: [String: Any]? { defaultParameters }
 }
 
 public protocol UserEvent: Event {
@@ -30,8 +34,8 @@ public protocol UserEvent: Event {
 }
 
 extension UserEvent {
-    var name: String { String(describing: type(of: self)) }
-    var value: String? { nil }
+    var name: String { defaultName }
+    var value: String? { defaultValue }
 }
 
 // MARK: AnalyticsEvent
