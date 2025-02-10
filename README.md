@@ -8,7 +8,7 @@ Install using Swift Package Manager.
 
 ## Usage
 
-A singleton `Tracker` object is provided. Use either the built-in [FirebaseAnalytics Events](https://firebase.google.com/docs/reference/swift/firebaseanalytics/api/reference/Constants) or define and use `CustomEvent`s and even `UserEvent`s.
+An `AppTracker` is available through the `@AppTracker` property wrapper. Alternatively, create an instance of the `DefaultTracker` actor. Use either the built-in [FirebaseAnalytics Events](https://firebase.google.com/docs/reference/swift/firebaseanalytics/api/reference/Constants) or define and use `CustomEvent`s and even `UserEvent`s.
 
 An extension is also provided on `SwiftUI.View` to make it easy to track `ScreenViewedEvent`s:
 

@@ -1,9 +1,22 @@
 // MARK: Event
-public protocol Event {}
+public protocol Event: Sendable {}
+
+public enum ParameterValueType : Sendable {
+    case string(String)
+    case int(Int)
+    case double(Double)
+    var value: Any {
+        switch self {
+        case .string(let string): return string
+        case .int(let int): return int
+        case .double(let double): return double
+        }
+    }
+}
 
 public extension Event {
     var defaultName: String { String(describing: type(of: self)) }
-    var defaultParameters: [String: Any]? { nil }
+    var defaultParameters: [String: ParameterValueType]? { nil }
     var defaultValue: String? { nil }
 }
 
@@ -13,12 +26,12 @@ public enum EventTrigger {
 
 public protocol CustomEvent: Event {
     var name: String { get }
-    var parameters: [String: Any]? { get }
+    var parameters: [String: ParameterValueType]? { get }
 }
 
 extension CustomEvent {
     var name: String { defaultName }
-    var parameters: [String: Any]? { defaultParameters }
+    var parameters: [String: ParameterValueType]? { defaultParameters }
 }
 
 public protocol UserEvent: Event {
@@ -36,24 +49,24 @@ import FirebaseAnalytics
 
 public protocol AnalyticsEvent: Event {
     var name: String { get }
-    var parameters: [String: Any?]? { get }
+    var parameters: [String: ParameterValueType?]? { get }
 }
 
 public struct ScreenViewedEvent: AnalyticsEvent {
     public let name = AnalyticsEventScreenView
-    public let parameters: [String : Any?]?
+    public let parameters: [String : ParameterValueType?]?
     
     public init(name: String) {
         parameters = [
-            AnalyticsParameterScreenClass: name,
-            AnalyticsParameterScreenName: name
+            AnalyticsParameterScreenClass: .string(name),
+            AnalyticsParameterScreenName: .string(name)
         ]
     }
 }
 
 public struct PurchaseCompletedEvent: AnalyticsEvent {
     public let name = AnalyticsEventPurchase
-    public let parameters: [String : Any?]?
+    public let parameters: [String : ParameterValueType?]?
     
     public init() {
         // Current StoreKit2 APIs do not provide enough information to fill in currency and value
@@ -67,21 +80,21 @@ public struct PurchaseCompletedEvent: AnalyticsEvent {
         value: Double
     ) {
         parameters = [
-            AnalyticsParameterAffiliation: affiliation,
+            AnalyticsParameterAffiliation: affiliation.map(ParameterValueType.string) ?? nil,
             AnalyticsParameterCoupon : nil, // Optional<String>
-            AnalyticsParameterCurrency: currency,
+            AnalyticsParameterCurrency: .string(currency),
             AnalyticsParameterItems: nil, // Optional<Array>
             AnalyticsParameterShipping : nil, // Optional<Double>
             AnalyticsParameterTax: nil, // Optional<Double>
-            AnalyticsParameterTransactionID: transactionId,
-            AnalyticsParameterValue: value
+            AnalyticsParameterTransactionID: .string(transactionId),
+            AnalyticsParameterValue: .double(value)
         ]
     }
 }
 
 public struct PurchaseStartedEvent: AnalyticsEvent {
     public let name = AnalyticsEventBeginCheckout
-    public let parameters: [String : Any?]?
+    public let parameters: [String : ParameterValueType?]?
     
     public init() {
         // Current StoreKit2 APIs do not provide enough information to fill in currency and value
@@ -94,16 +107,16 @@ public struct PurchaseStartedEvent: AnalyticsEvent {
     ) {
         parameters = [
             AnalyticsParameterCoupon : nil, // Optional<String>
-            AnalyticsParameterCurrency: currency,
+            AnalyticsParameterCurrency: .string(currency),
             AnalyticsParameterItems: nil, // Optional<Array>
-            AnalyticsParameterValue: value
+            AnalyticsParameterValue: .double(value)
         ]
     }
 }
 
 public struct StoreViewedEvent: AnalyticsEvent {
     public let name = AnalyticsEventViewCart
-    public let parameters: [String : Any?]? = nil
+    public let parameters: [String : ParameterValueType?]? = nil
     
     public init() {}
 }
