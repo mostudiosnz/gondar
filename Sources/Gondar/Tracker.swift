@@ -15,6 +15,7 @@ public protocol Tracker {
 }
 
 public actor DefaultTracker: Tracker {
+    public init() {}
     nonisolated public func track(event: Event) {
         if let analyticsEvent = event as? AnalyticsEvent {
             Analytics.logEvent(analyticsEvent.name, parameters: analyticsEvent.parameters?.typeErased)
