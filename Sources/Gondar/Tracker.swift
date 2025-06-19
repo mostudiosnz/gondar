@@ -79,28 +79,60 @@ public extension View {
     }
 }
 
-public struct EventTrackingModifier: ViewModifier {
+struct EventTrackingWrapperView<Content: View>: View {
     @AppTracker var tracker
+    let content: Content
     private let triggeredEventsMap: [EventTrigger: [Event]]
     private let condition: () -> Bool
-    
+
+    @State private var onAppearTracked = false
+    @State private var onDisappearTracked = false
+
+    init(
+        content: Content,
+        triggeredEventsMap: [EventTrigger: [Event]],
+        condition: @escaping () -> Bool
+    ) {
+        self.content = content
+        self.triggeredEventsMap = triggeredEventsMap
+        self.condition = condition
+    }
+
+    var body: some View {
+        content
+            .onAppear {
+                defer { onAppearTracked = true }
+                guard !onAppearTracked else { return }
+                track(on: .appear)
+            }
+            .onDisappear {
+                defer { onDisappearTracked = true }
+                guard !onDisappearTracked else { return }
+                track(on: .disappear)
+            }
+    }
+
+    private func track(on trigger: EventTrigger) {
+        guard condition() else { return }
+        triggeredEventsMap[trigger]?.forEach(tracker.track)
+    }
+}
+
+public struct EventTrackingModifier: ViewModifier {
+    private let triggeredEventsMap: [EventTrigger: [Event]]
+    private let condition: () -> Bool
+
     public init(on trigger: EventTrigger, given condition: @escaping () -> Bool, track events: [Event]) {
         self.triggeredEventsMap = [trigger: events]
         self.condition = condition
     }
-    
+
     public func body(content: Content) -> some View {
-        content
-            .onAppear { track(on: .appear) }
-            .onDisappear { track(on: .disappear) }
-    }
-    
-    private func track(on trigger: EventTrigger) {
-        guard condition() else { return }
-        triggeredEventsMap
-            .filter { $0.key == trigger }
-            .flatMap(\.value)
-            .forEach(tracker.track)
+        EventTrackingWrapperView(
+            content: content,
+            triggeredEventsMap: triggeredEventsMap,
+            condition: condition
+        )
     }
 }
 
