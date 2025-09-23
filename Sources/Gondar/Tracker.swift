@@ -2,7 +2,7 @@ import FirebaseAnalytics
 import SwiftUI
 
 // MARK: Tracker
-public protocol Tracker {
+public protocol Tracker: Sendable {
     func track(event: Event)
 }
 
