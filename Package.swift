@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Gondar",
     platforms: [
-        .iOS(.v13),
+        .iOS(.v15),
         .macOS(.v11),
         .watchOS(.v7),
         .tvOS(.v14)
