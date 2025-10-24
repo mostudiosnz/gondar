@@ -8,9 +8,7 @@ Install using Swift Package Manager.
 
 ## Usage
 
-Create an `AppTracker` instance and use it throughout the app. Recommended approach is to set it on the environment and use it throughout the app. Use either the built-in [FirebaseAnalytics Events](https://firebase.google.com/docs/reference/swift/firebaseanalytics/api/reference/Constants) or define and use `CustomEvent`s and even `UserEvent`s.
-
-An extension is also provided on `SwiftUI.View` to make it easy to track `ScreenViewedEvent`s:
+Create an `AppTracker` instance and use it throughout the app. Recommended approach is to set it on the environment and use it throughout the app, but it can be constructed whenever as it is stateless.
 
 ```
 // SomeView.swift
@@ -18,11 +16,11 @@ An extension is also provided on `SwiftUI.View` to make it easy to track `Screen
 import SwiftUI
 
 struct AppTrackerKey: EnvironmentKey {
-    static let defaultValue = AppTracker()
+    static let defaultValue: any Tracker = AppTracker()
 }
 
 extension EnvironmentValues {
-    var tracker: AppTracker {
+    var tracker: any Tracker {
         get { self[AppTrackerKey.self] }
         set { self[AppTrackerKey.self] = newValue }
     }
