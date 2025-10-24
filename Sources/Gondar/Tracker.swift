@@ -7,15 +7,7 @@ public protocol Tracker: Sendable {
     func track(event: Event)
 }
 
-@propertyWrapper public struct AppTracker: DynamicProperty {
-    public var wrappedValue: DefaultTracker
-    
-    public init() {
-        self.wrappedValue = DefaultTracker()
-    }
-}
-
-public actor DefaultTracker: Tracker {
+public struct AppTracker: Tracker {
     public init() {}
     nonisolated public func track(event: Event) {
         if let purchaseCompletedEvent = event as? PurchaseCompletedEvent, let transaction = purchaseCompletedEvent.transaction {
