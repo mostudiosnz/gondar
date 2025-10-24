@@ -1,7 +1,7 @@
 // MARK: Event
 public protocol Event: Sendable {}
 
-public enum ParameterValueType : Sendable {
+public enum ParameterValueType : Sendable, CustomStringConvertible {
     case string(String)
     case int(Int)
     case double(Double)
@@ -10,6 +10,13 @@ public enum ParameterValueType : Sendable {
         case .string(let string): return string
         case .int(let int): return int
         case .double(let double): return double
+        }
+    }
+    public var description: String {
+        return switch self {
+        case let .string(string): string
+        case let .int(int): String(describing: int)
+        case let .double(double): String(describing: double)
         }
     }
 }
@@ -46,6 +53,7 @@ extension UserEvent {
 
 // MARK: AnalyticsEvent
 import FirebaseAnalytics
+import StoreKit
 
 public protocol AnalyticsEvent: Event {
     var name: String { get }
@@ -67,28 +75,32 @@ public struct ScreenViewedEvent: AnalyticsEvent {
 public struct PurchaseCompletedEvent: AnalyticsEvent {
     public let name = AnalyticsEventPurchase
     public let parameters: [String : ParameterValueType?]?
+    internal let transaction: Transaction?
     
-    public init() {
-        // Current StoreKit2 APIs do not provide enough information to fill in currency and value
-        parameters = nil
+    public init(transaction: Transaction) {
+        if let currency = transaction.currency, let price = transaction.price.map(NSDecimalNumber.init(decimal:)) {
+            parameters = [
+                AnalyticsParameterTransactionID: .string(transaction.productID),
+                AnalyticsParameterCurrency: .string(currency.identifier),
+                AnalyticsParameterValue: .double(price.doubleValue),
+            ]
+        } else {
+            parameters = nil
+        }
+        self.transaction = transaction
     }
     
     public init(
-        affiliation: String? = nil,
-        currency: String,
         transactionId: String,
+        currency: String,
         value: Double
     ) {
         parameters = [
-            AnalyticsParameterAffiliation: affiliation.map(ParameterValueType.string) ?? nil,
-            AnalyticsParameterCoupon : nil, // Optional<String>
-            AnalyticsParameterCurrency: .string(currency),
-            AnalyticsParameterItems: nil, // Optional<Array>
-            AnalyticsParameterShipping : nil, // Optional<Double>
-            AnalyticsParameterTax: nil, // Optional<Double>
             AnalyticsParameterTransactionID: .string(transactionId),
-            AnalyticsParameterValue: .double(value)
+            AnalyticsParameterCurrency: .string(currency),
+            AnalyticsParameterValue: .double(value),
         ]
+        transaction = nil
     }
 }
 
