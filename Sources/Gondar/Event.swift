@@ -5,11 +5,13 @@ public enum ParameterValueType : Sendable, CustomStringConvertible {
     case string(String)
     case int(Int)
     case double(Double)
+    case bool(Bool)
     var value: Any {
         switch self {
         case .string(let string): return string
         case .int(let int): return int
         case .double(let double): return double
+        case .bool(let bool): return bool
         }
     }
     public var description: String {
@@ -17,6 +19,7 @@ public enum ParameterValueType : Sendable, CustomStringConvertible {
         case let .string(string): string
         case let .int(int): String(describing: int)
         case let .double(double): String(describing: double)
+        case let .bool(bool): String(describing: bool)
         }
     }
 }

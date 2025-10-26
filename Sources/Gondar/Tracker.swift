@@ -38,6 +38,7 @@ internal extension Dictionary where Key == String, Value == ParameterValueType? 
             case .string(let string): result[key] = string
             case .int(let int): result[key] = int
             case .double(let double): result[key] = double
+            case .bool(let bool): result[key] = bool
             }
         }
         return result.isEmpty ? nil : result
@@ -60,6 +61,7 @@ internal extension Dictionary where Key == String, Value == ParameterValueType {
             case .string(let string): result[key] = string
             case .int(let int): result[key] = int
             case .double(let double): result[key] = double
+            case .bool(let bool): result[key] = bool
             }
         }
         return result.isEmpty ? nil : result
