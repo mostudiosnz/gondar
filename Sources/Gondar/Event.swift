@@ -39,19 +39,9 @@ public protocol CustomEvent: Event {
     var parameters: [String: ParameterValueType]? { get }
 }
 
-extension CustomEvent {
-    var name: String { defaultName }
-    var parameters: [String: ParameterValueType]? { defaultParameters }
-}
-
 public protocol UserEvent: Event {
     var name: String { get }
-    var value: String? { get }
-}
-
-extension UserEvent {
-    var name: String { defaultName }
-    var value: String? { defaultValue }
+    var value: ParameterValueType? { get }
 }
 
 // MARK: AnalyticsEvent
