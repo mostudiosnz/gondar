@@ -1,3 +1,6 @@
+import FirebaseAnalytics
+import StoreKit
+
 // MARK: Event
 public protocol Event: Sendable {}
 
@@ -30,8 +33,9 @@ public extension Event {
     var defaultValue: String? { nil }
 }
 
-public enum EventTrigger {
-    case appear, disappear
+public protocol AnalyticsEvent: Event {
+    var name: String { get }
+    var parameters: [String: ParameterValueType?]? { get }
 }
 
 public protocol CustomEvent: Event {
@@ -44,7 +48,8 @@ public protocol UserEvent: Event {
     var value: ParameterValueType? { get }
 }
 
-public struct IdentifyUserEvent: UserEvent {
+// MARK: mixpanel
+public struct IdentifyUserEvent: Event {
     public let id: String
     public var name: String { defaultName }
     public var value: ParameterValueType? { .string(id) }
@@ -53,15 +58,24 @@ public struct IdentifyUserEvent: UserEvent {
     }
 }
 
-// MARK: AnalyticsEvent
-import FirebaseAnalytics
-import StoreKit
-
-public protocol AnalyticsEvent: Event {
-    var name: String { get }
-    var parameters: [String: ParameterValueType?]? { get }
+public struct SetGroupEvent: Event {
+    public let id: String
+    public let name: String
+    public var value: ParameterValueType? { .string(id) }
+    public init(name: String, id: String) {
+        self.id = id
+    }
 }
 
+public struct SetSuperPropertiesEvent: Event {
+    public var name: String { "" }
+    public var parameters: [String : ParameterValueType]?
+    public init(parameters: [String : ParameterValueType]? = nil) {
+        self.parameters = parameters
+    }
+}
+
+// MARK: screen viewed
 public struct ScreenViewedEvent: AnalyticsEvent {
     public let name = AnalyticsEventScreenView
     public let parameters: [String : ParameterValueType?]?
@@ -74,6 +88,7 @@ public struct ScreenViewedEvent: AnalyticsEvent {
     }
 }
 
+// MARK: purchase related
 public struct PurchaseCompletedEvent: AnalyticsEvent {
     public let name = AnalyticsEventPurchase
     public let parameters: [String : ParameterValueType?]?

@@ -10,19 +10,25 @@ public protocol Tracker: Sendable {
 public struct AppTracker: Tracker {
     public init() {}
     nonisolated public func track(event: Event) {
-        if let analyticsEvent = event as? AnalyticsEvent {
+        if let identifyUserEvent = event as? IdentifyUserEvent {
+            Analytics.setUserProperty(identifyUserEvent.value?.description, forName: identifyUserEvent.name)
+            Mixpanel.safeMainInstance()?.identify(distinctId: identifyUserEvent.id)
+        } else if let groupEvent = event as? SetGroupEvent {
+            // Firebase doesn't support group properties like this
+            Mixpanel.safeMainInstance()?.setGroup(groupKey: groupEvent.name, groupID: groupEvent.value?.value)
+        } else if let setSuperPropertiesEvent = event as? SetSuperPropertiesEvent, let properties = setSuperPropertiesEvent.parameters?.typeMixpanelProperties {
+            // Firebase doesn't support super properties like this
+            Mixpanel.safeMainInstance()?.registerSuperProperties(properties)
+        } else if let analyticsEvent = event as? AnalyticsEvent {
             Analytics.logEvent(analyticsEvent.name, parameters: analyticsEvent.parameters?.typeErased)
             Mixpanel.safeMainInstance()?.track(event: analyticsEvent.name, properties: analyticsEvent.parameters?.typeMixpanelProperties)
         } else if let customEvent = event as? CustomEvent {
             Analytics.logEvent(customEvent.name, parameters: customEvent.parameters?.typeErased)
             Mixpanel.safeMainInstance()?.track(event: customEvent.name, properties: customEvent.parameters?.typeMixpanelProperties)
-        } else if let identifyUserEvent = event as? IdentifyUserEvent {
-            Analytics.setUserProperty(identifyUserEvent.value?.description, forName: identifyUserEvent.name)
-            Mixpanel.safeMainInstance()?.identify(distinctId: identifyUserEvent.id)
         } else if let userEvent = event as? UserEvent {
             Analytics.setUserProperty(userEvent.value?.description, forName: userEvent.name)
             Mixpanel.safeMainInstance()?.people?.set(property: userEvent.name, to: userEvent.value?.value)
-        }
+        } 
     }
 }
 
