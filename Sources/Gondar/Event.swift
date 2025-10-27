@@ -63,6 +63,7 @@ public struct SetGroupEvent: Event {
     public let name: String
     public var value: ParameterValueType? { .string(id) }
     public init(name: String, id: String) {
+        self.name = name
         self.id = id
     }
 }
