@@ -16,6 +16,9 @@ public struct AppTracker: Tracker {
         } else if let customEvent = event as? CustomEvent {
             Analytics.logEvent(customEvent.name, parameters: customEvent.parameters?.typeErased)
             Mixpanel.safeMainInstance()?.track(event: customEvent.name, properties: customEvent.parameters?.typeMixpanelProperties)
+        } else if let identifyUserEvent = event as? IdentifyUserEvent {
+            Analytics.setUserProperty(identifyUserEvent.value?.description, forName: identifyUserEvent.name)
+            Mixpanel.safeMainInstance()?.identify(distinctId: identifyUserEvent.id)
         } else if let userEvent = event as? UserEvent {
             Analytics.setUserProperty(userEvent.value?.description, forName: userEvent.name)
             Mixpanel.safeMainInstance()?.people?.set(property: userEvent.name, to: userEvent.value?.value)

@@ -44,6 +44,15 @@ public protocol UserEvent: Event {
     var value: ParameterValueType? { get }
 }
 
+public struct IdentifyUserEvent: UserEvent {
+    public let id: String
+    public var name: String { defaultName }
+    public var value: ParameterValueType? { .string(id) }
+    public init(id: String) {
+        self.id = id
+    }
+}
+
 // MARK: AnalyticsEvent
 import FirebaseAnalytics
 import StoreKit
