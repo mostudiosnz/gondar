@@ -6,7 +6,7 @@ A wrapper around [FirebaseAnalytics](https://github.com/firebase/firebase-ios-sd
 
 Install using Swift Package Manager.
 
-Version 4.0.0 uses Mixpanel 7.0.0 and requires Xcode 27 or later (the package uses Swift tools 6.2). Supported platforms are iOS 16, macOS 13, watchOS 9, and tvOS 15 or later. The watchOS and tvOS minimums have increased from watchOS 7 and tvOS 14 in Gondar 3.x.
+Version 4.0.0 uses Firebase 13.1.1 and Mixpanel 7.0.0 and requires Xcode 27 or later (the package uses Swift tools 6.2). Supported platforms are iOS 16, macOS 13, watchOS 9, and tvOS 15 or later. The watchOS and tvOS minimums have increased from watchOS 7 and tvOS 14 in Gondar 3.x.
 
 ## Usage
 
